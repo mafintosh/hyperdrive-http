@@ -14,6 +14,7 @@
   "author": "Joe Hand <joe@hand.email>",
   "license": "MIT",
   "dependencies": {
+    "directory-index-html": "^2.1.0",
     "hyperdrive": "github:mafintosh/hyperdrive#v8",
     "mime": "^1.3.4",
     "pump": "^1.0.2",
