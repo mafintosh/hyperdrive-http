@@ -61,7 +61,7 @@ function serve (archive) {
   }
 
   function onrequest (req, res) {
-    var name = req.url.split('?')[0]
+    var name = decodeURI(req.url.split('?')[0])
     var query = qs.parse(req.url.split('?')[1] || '')
 
     var wait = query.wait && Number(query.wait.toString()) || 0
