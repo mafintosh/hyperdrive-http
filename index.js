@@ -3,6 +3,7 @@ var pump = require('pump')
 var mime = require('mime')
 var range = require('range-parser')
 var qs = require('querystring')
+var pkg = require('./package')
 
 module.exports = serve
 
@@ -79,6 +80,7 @@ function ondirectoryindex (archive, name, opts, req, res, exposeHeaders) {
     if (exposeHeaders) {
       res.setHeader('Hyperdrive-Key', archive.key.toString('hex'))
       res.setHeader('Hyperdrive-Version', archive.version)
+      res.setHeader('Hyperdrive-Http-Version', pkg.version)
     }
     res.end(html)
   })
