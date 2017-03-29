@@ -74,6 +74,8 @@ function ondirectoryindex (archive, name, opts, req, res) {
     var html = toHTML({directory: name, script: archive._checkout ? null : script}, entries)
     res.setHeader('Content-Type', 'text/html; charset=utf-8')
     res.setHeader('Content-Length', Buffer.byteLength(html))
+    res.setHeader('Hyperdrive-Key', archive.key.toString('hex'))
+    res.setHeader('Hyperdrive-Version', archive.version)
     res.end(html)
   })
 }
