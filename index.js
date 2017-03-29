@@ -6,7 +6,9 @@ var qs = require('querystring')
 
 module.exports = serve
 
-function serve (archive) {
+function serve (archive, opts) {
+  var exposeHeaders = opts && opts.exposeHeaders
+
   return onrequest
 
   function onrequest (req, res) {
@@ -21,7 +23,7 @@ function serve (archive) {
 
     function ready () {
       var arch = /^\d+$/.test(query.version) ? archive.checkout(Number(query.version)) : archive
-      if (name[name.length - 1] === '/') ondirectory(arch, name, query, req, res)
+      if (name[name.length - 1] === '/') ondirectory(arch, name, query, req, res, exposeHeaders)
       else onfile(arch, name, query, req, res)
     }
   }
@@ -48,14 +50,14 @@ function onfile (archive, name, opts, req, res) {
   })
 }
 
-function ondirectory (archive, name, opts, req, res) {
+function ondirectory (archive, name, opts, req, res, exposeHeaders) {
   archive.stat(name + 'index.html', function (err) {
-    if (err) return ondirectoryindex(archive, name, opts, req, res)
+    if (err) return ondirectoryindex(archive, name, opts, req, res, exposeHeaders)
     onfile(archive, name + 'index.html', opts, req, res)
   })
 }
 
-function ondirectoryindex (archive, name, opts, req, res) {
+function ondirectoryindex (archive, name, opts, req, res, exposeHeaders) {
   list(archive, name, function (err, entries) {
     if (err) entries = []
 
@@ -74,8 +76,10 @@ function ondirectoryindex (archive, name, opts, req, res) {
     var html = toHTML({directory: name, script: archive._checkout ? null : script}, entries)
     res.setHeader('Content-Type', 'text/html; charset=utf-8')
     res.setHeader('Content-Length', Buffer.byteLength(html))
-    res.setHeader('Hyperdrive-Key', archive.key.toString('hex'))
-    res.setHeader('Hyperdrive-Version', archive.version)
+    if (exposeHeaders) {
+      res.setHeader('Hyperdrive-Key', archive.key.toString('hex'))
+      res.setHeader('Hyperdrive-Version', archive.version)
+    }
     res.end(html)
   })
 }

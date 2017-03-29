@@ -6,7 +6,7 @@ var serve = require('.')
 
 var archive = hyperdrive(ram)
 
-var server = http.createServer(serve(archive))
+var server = http.createServer(serve(archive, {exposeHeaders: true}))
 
 archive.writeFile('readme.md', fs.readFileSync('readme.md'))
 archive.writeFile('package.json', fs.readFileSync('package.json'))

@@ -29,7 +29,7 @@ Hyperdrive works with many archives/feeds or a single archive.
 If you have multiple archives, you will need to look the archive to return using the key.
 
 Initiate with an archive lookup function:
-`var onrequest = hyperdriveHttp(getArchive)`
+`var onrequest = hyperdriveHttp(getArchive[, options])`
 
 The archive lookup function may look like this:
 
@@ -56,12 +56,20 @@ var getArchive = function (datInfo, cb) {
 Hyperdrive-http works great with a single archive too. It exposes the metadata at the root path and files are available without using the key.
 
 Pass a single archive on initiation:
-`var onrequest = hyperdriveHttp(archive)`
+`var onrequest = hyperdriveHttp(archive[, options])`
 
 Now your archive metadata will be available at http://example.com/
 
 #### Hypercore Feed(s)
-You can also use a hypercore feed: `hyperdriveHttp(feed)` (or using a similar getArchive function)
+You can also use a hypercore feed: `hyperdriveHttp(feed[, options])` (or using a similar getArchive function)
+
+#### Options
+
+- `exposeHeaders` - If set to `true`, hyperdrive-http will add custom `Hyperdrive-` HTTP headers to directory listing requests (default: `false`):
+  ```http
+  Hyperdrive-Key: de2a51bbaf8a5545eff82c999f15e1fd29637b3f16db94633cb6e2e0c324f833
+  Hyperdrive-Version: 4
+  ```
 
 ### URL Format
 
@@ -101,7 +109,7 @@ var getArchive = function (datInfo, cb) {
   cb(null, archive) // callback with your found archive
 }
 
-var onrequest = hyperdriveHttp(getArchive)
+var onrequest = hyperdriveHttp(getArchive, {exposeHeaders: true})
 var server = http.createServer()
 server.listen(8000)
 server.on('request', onrequest)
